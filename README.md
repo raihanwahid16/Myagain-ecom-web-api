@@ -1,19 +1,17 @@
-# 🛒 E-Commerce Web API
+//akne muloto amra amne likbo
+ASP.NET
+1. Basics of ASP.NET Core
+2. Introduction to Web API
+you to build them.
 
-এটি সি-শার্প (#C) এবং .NET ব্যবহার করে তৈরি করা একটি ই-কমার্স ব্যাকএন্ড ওয়েব এপিআই (Web API) প্রজেক্ট।
+[x] REST principles and HTTP methods (GET, POST, PUT, DELETE).
 
-## 🚀 বৈশিষ্ট্যসমূহ (Features)
-* ইউজার রেজিস্ট্রেশন এবং লগইন (Authentication)
-* প্রোডাক্ট ম্যানেজমেন্ট (CRUD Operations)
-* শপিং কার্ট এবং অর্ডার সিস্টেম
+[x] What is a Web API and how it works in the ASP.NET Core ecosystem.
 
-## 🛠️ টেকনোলজি স্ট্যাক (Tech Stack)
-* **Language:** C#
-* **Framework:** .NET 10.0
-* **Database:** SQL Server / EF Core
+[x] Create a simple Web API project in ASP.NET Core.
 
-## 🏃‍♂️ প্রজেক্টটি লোকালি রান করার নিয়ম
-প্রজেক্টটি আপনার কম্পিউটারে রান করতে টার্মিনালে নিচের কমান্ডটি দিন:
+[ ] Build a basic controller with a couple of endpoints (GET /hello, POST /hello).
 
-```bash
-dotnet run
+[ ] Testing API
+
+[ ] Types of API Responses
