@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using asp_net_ecommerce_web_api.Models; // 🟢 সঠিক নেমস্পেস লিংক করা হয়েছে
+using asp_net_ecommerce_web_api.DTOs;
 
 namespace asp_net_ecommerce_web_api.Controllers
 {
@@ -29,8 +30,6 @@ namespace asp_net_ecommerce_web_api.Controllers
 
 
 
-        // akane return korar somy Results dite hobe karon amra IActionResult use korchi.
-        
 
 
 
@@ -38,6 +37,7 @@ namespace asp_net_ecommerce_web_api.Controllers
         [HttpGet]
         public IActionResult GetCategories([FromQuery] string searchValue = "")
         {
+           /*
             if (!string.IsNullOrEmpty(searchValue))
             {
                 var searchedCategories = categories
@@ -48,6 +48,16 @@ namespace asp_net_ecommerce_web_api.Controllers
             }
 
             return Ok(categories);
+            */
+            var categoryList = categories.Select(c => new CategoryReadDto
+        {
+            CategoryId = c.CategoryId,
+            Name = c.Name,
+            //Description = c.Description,
+            CreatedAt = c.CreatedAt
+        }).ToList();
+
+           return Ok(categoryList);
         }
 
 
@@ -79,7 +89,7 @@ namespace asp_net_ecommerce_web_api.Controllers
 
         // POST: api/category
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] Category categoryData)
+        public IActionResult CreateCategory([FromBody] CategoryCreateDto categoryData)
         {
             if (string.IsNullOrEmpty(categoryData.Name))
            {
@@ -106,7 +116,7 @@ namespace asp_net_ecommerce_web_api.Controllers
 
         // PUT: api/category/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(Guid id, [FromBody] Category updatedData)
+        public IActionResult UpdateCategory(Guid id, [FromBody] CategoryUpdateDto updatedData)
         {
             var existingCategory = categories.FirstOrDefault(c => c.CategoryId == id);
 

@@ -15,7 +15,7 @@ POST http://localhost:5266/api/categories
 Content-Type: application/json
 
 {
-"name": "Clothes",
+"name": "Electronics",
 "description": "Apparel including shirts, pants, dresses, and more"
 }
 
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ###
-Delete http://localhost:5266/api/categories/f20afc80-d2d5-468d-bbe7-c4e9c0f7698e
+Delete http://localhost:5266/api/categories/147c6f46-ae9e-4133-9b01-99e6b119554a
 
 ###
 Get http://localhost:5266/products
