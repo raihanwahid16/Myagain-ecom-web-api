@@ -91,10 +91,8 @@ namespace asp_net_ecommerce_web_api.Controllers
         [HttpPost]
         public IActionResult CreateCategory([FromBody] CategoryCreateDto categoryData)
         {
-            if (string.IsNullOrEmpty(categoryData.Name))
-           {
-               return BadRequest("Category name is required and cannot be empty");
-           }
+            
+            
            var newCategory = new Category
           {
           CategoryId = Guid.NewGuid(),
@@ -103,7 +101,15 @@ namespace asp_net_ecommerce_web_api.Controllers
           CreatedAt = DateTime.UtcNow,
           };
           categories.Add(newCategory);
-               return Created($"/api/categories/{newCategory.CategoryId}", newCategory);
+
+          var categoryreaddto = new CategoryReadDto
+          {
+              CategoryId = newCategory.CategoryId,
+              Name = newCategory.Name,
+              //Description = newCategory.Description,
+              CreatedAt = newCategory.CreatedAt
+          };
+               return Created($"/api/categories/{newCategory.CategoryId}", categoryreaddto);
      }
 
 

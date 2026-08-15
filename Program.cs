@@ -2,15 +2,36 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//এটি ডটনেটকে বলে যে প্রজেক্টে কন্ট্রোলার সার্ভিস ব্যবহার করা হচ্ছে।
-builder.Services.AddControllers();
+// ✅ ১. Controllers এবং Custom Validation Response কনফিগারেশন
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value.Errors.Count > 0)
+                .Select(e => new
+                {
+                    Field = e.Key,
+                    Errors = e.Value.Errors.Select(x => x.ErrorMessage).ToArray()
+                }).ToList();
 
-// ✅ OpenAPI সার্ভিস যোগ করা
+            var errorString = string.Join("; ", errors.Select(e => $"{e.Field}: {string.Join(", ", e.Errors)}"));
+
+            return new BadRequestObjectResult(new
+            {
+                Message = "Validation failed",
+                Errors = errorString
+            });
+        };
+    });
+
+// ✅ ২. OpenAPI সার্ভিস যোগ করা
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// ✅ ডেভেলপমেন্টে OpenAPI এবং Swagger UI সচল করা
+// ✅ ৩. ডেভেলপমেন্ট এনভায়রনমেন্টে Swagger/OpenAPI সক্রিয় করা
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi(); 
@@ -21,12 +42,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
-
 app.UseHttpsRedirection();
 
-//এটি ডটনেটকে বলে যে সব কন্ট্রোলারের ভেতরে থাকা রুট অ্যাক্টিভেট করো।)
+// ✅ ৪. কন্ট্রোলার রুট ম্যাপ করা
 app.MapControllers();
 
 app.Run();
-
