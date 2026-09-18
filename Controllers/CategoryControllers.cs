@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using asp_net_ecommerce_web_api.Models; // 🟢 সঠিক নেমস্পেস লিংক করা হয়েছে
 using asp_net_ecommerce_web_api.DTOs;
 
+
 namespace asp_net_ecommerce_web_api.Controllers
 {
 
 
 
 
-    
+
     [ApiController]
     [Route("api/categories/")]
 
@@ -26,7 +27,7 @@ namespace asp_net_ecommerce_web_api.Controllers
     public class CategoryController : ControllerBase
     {
         private static List<Category> categories = new List<Category>();
-        
+
 
 
 
@@ -37,27 +38,29 @@ namespace asp_net_ecommerce_web_api.Controllers
         [HttpGet]
         public IActionResult GetCategories([FromQuery] string searchValue = "")
         {
-           /*
-            if (!string.IsNullOrEmpty(searchValue))
-            {
-                var searchedCategories = categories
-                    .Where(c => c.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+            /*
+             if (!string.IsNullOrEmpty(searchValue))
+             {
+                 var searchedCategories = categories
+                     .Where(c => c.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase))
+                     .ToList();
 
-                return Ok(searchedCategories);
-            }
+                 return Ok(searchedCategories);
+             }
 
-            return Ok(categories);
-            */
+             return Ok(categories);
+             */
             var categoryList = categories.Select(c => new CategoryReadDto
-        {
-            CategoryId = c.CategoryId,
-            Name = c.Name,
-            //Description = c.Description,
-            CreatedAt = c.CreatedAt
-        }).ToList();
+            {
+                CategoryId = c.CategoryId,
+                Name = c.Name,
+                //Description = c.Description,
+                CreatedAt = c.CreatedAt
+            }).ToList();
 
-           return Ok(categoryList);
+            //return Ok(categoryList);
+            return Ok(ApiResponse<List<CategoryReadDto>>.SuccessResponse(categoryList, 200,
+            "Catgeories returned successfully"));
         }
 
 
@@ -72,7 +75,7 @@ namespace asp_net_ecommerce_web_api.Controllers
         public IActionResult GetCategoryById(Guid id)
         {
             var category = categories.FirstOrDefault(c => c.CategoryId == id);
-            
+
             if (category == null)
             {
                 return NotFound($"Category not found with ID: {id}");
@@ -91,61 +94,50 @@ namespace asp_net_ecommerce_web_api.Controllers
         [HttpPost]
         public IActionResult CreateCategory([FromBody] CategoryCreateDto categoryData)
         {
-            
-            
-           var newCategory = new Category
-          {
-          CategoryId = Guid.NewGuid(),
-          Name = categoryData.Name,
-          Description = categoryData.Description,
-          CreatedAt = DateTime.UtcNow,
-          };
-          categories.Add(newCategory);
-
-          var categoryreaddto = new CategoryReadDto
-          {
-              CategoryId = newCategory.CategoryId,
-              Name = newCategory.Name,
-              //Description = newCategory.Description,
-              CreatedAt = newCategory.CreatedAt
-          };
-               return Created($"/api/categories/{newCategory.CategoryId}", categoryreaddto);
-     }
 
 
-
-
-
-
-
-
-
-        // PUT: api/category/{id}
-        [HttpPut("{id}")]
-        public IActionResult UpdateCategory(Guid id, [FromBody] CategoryUpdateDto updatedData)
-        {
-            var existingCategory = categories.FirstOrDefault(c => c.CategoryId == id);
-
-            if (existingCategory == null)
+            var newCategory = new Category
             {
-                return NotFound($"Category not found with ID: {id}");
-            }
+                CategoryId = Guid.NewGuid(),
+                Name = categoryData.Name,
+                Description = categoryData.Description,
+                CreatedAt = DateTime.UtcNow,
+            };
+            categories.Add(newCategory);
 
-            if (string.IsNullOrWhiteSpace(updatedData.Name))
+            var categoryreaddto = new CategoryReadDto
             {
-                return BadRequest("Category name cannot be empty!");
-            }
-
-            existingCategory.Name = updatedData.Name;
-            
-            if (!string.IsNullOrWhiteSpace(updatedData.Description))
-            {
-                existingCategory.Description = updatedData.Description;
-            }
-
-            return NoContent();
+                CategoryId = newCategory.CategoryId,
+                Name = newCategory.Name,
+                //Description = newCategory.Description,
+                CreatedAt = newCategory.CreatedAt
+            };
+            return Created($"/api/categories/{newCategory.CategoryId}",
+            ApiResponse<CategoryReadDto>.SuccessResponse(categoryreaddto, 201, "Catgeory created successfully"));
         }
 
+
+
+
+
+
+
+
+        // PUT: /api/categories/{categoryId} => Update a category
+        [HttpPut("{categoryId:guid}")]
+        public IActionResult UpdateCategoryById(Guid categoryId, [FromBody] CategoryUpdateDto categoryData)
+        {
+            var foundCategory = categories.FirstOrDefault(category => category.CategoryId == categoryId);
+            if (foundCategory == null)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse(new List<string> { "Category with this ID does not exist" }, 404, "Validation failed"));
+            }
+
+            foundCategory.Name = categoryData.Name;
+            foundCategory.Description = categoryData.Description;
+
+            return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Catgeory Updated successfully"));
+        }
 
 
 
@@ -166,7 +158,8 @@ namespace asp_net_ecommerce_web_api.Controllers
             }
 
             categories.Remove(category);
-            return NoContent();
+            //return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Category deleted successfully"));
         }
 
 
