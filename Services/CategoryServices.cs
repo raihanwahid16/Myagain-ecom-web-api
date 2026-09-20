@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 using asp_net_ecommerce_web_api.DTOs;
 using asp_net_ecommerce_web_api.Models;
 using asp_net_ecommerce_web_api.Interfaces;
+using AutoMapper;
 
 namespace asp_net_ecommerce_web_api.Services
 {
-    public class CategoryService:ICategoryService
+    public class CategoryService : ICategoryService
     {
         private static readonly List<Category> sv_categories = new List<Category>();
+        private readonly IMapper _mapper;
+
+        public CategoryService(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
 
-
+        
 
 
 
@@ -22,6 +29,7 @@ namespace asp_net_ecommerce_web_api.Services
 
         public List<CategoryReadDto> GetAllCategories()
         {
+            /*
             return sv_categories.Select(c => new CategoryReadDto
             {
                 CategoryId = c.CategoryId,
@@ -29,6 +37,8 @@ namespace asp_net_ecommerce_web_api.Services
                 Description = c.Description,
                 CreatedAt = c.CreatedAt
             }).ToList();
+            */
+            return _mapper.Map<List<CategoryReadDto>>(sv_categories);
         }
 
 
@@ -40,6 +50,7 @@ namespace asp_net_ecommerce_web_api.Services
 
         public CategoryReadDto sc_CreateCategory(CategoryCreateDto categorydata)
         {
+            /*
             var newCategory = new Category
             {
                 CategoryId = Guid.NewGuid(),
@@ -47,9 +58,13 @@ namespace asp_net_ecommerce_web_api.Services
                 Description = categorydata.Description,
                 CreatedAt = DateTime.UtcNow,
             };
-
+            */
+            var newCategory = _mapper.Map<Category>(categorydata);
+            newCategory.CategoryId = Guid.NewGuid();
+            newCategory.Description = categorydata.Description;
             sv_categories.Add(newCategory);
 
+            /*
             return new CategoryReadDto
             {
                 CategoryId = newCategory.CategoryId,
@@ -57,6 +72,8 @@ namespace asp_net_ecommerce_web_api.Services
                 Description = newCategory.Description,
                 CreatedAt = newCategory.CreatedAt,
             };
+            */
+            return _mapper.Map<CategoryReadDto>(newCategory);
         }
 
 
@@ -69,7 +86,7 @@ namespace asp_net_ecommerce_web_api.Services
         public CategoryReadDto? sc_GetCategoryById(Guid categoryId)
         {
             var foundCategory = sv_categories.FirstOrDefault(c => c.CategoryId == categoryId);
-
+            /*
             if (foundCategory == null)
             {
                 return null;
@@ -81,6 +98,9 @@ namespace asp_net_ecommerce_web_api.Services
                 Description = foundCategory.Description,
                 CreatedAt = foundCategory.CreatedAt
             };
+            */
+            return foundCategory == null ?null : _mapper.Map<CategoryReadDto>(foundCategory);
+
 
         }
 
@@ -98,10 +118,12 @@ namespace asp_net_ecommerce_web_api.Services
             {
                 return null;
             }
-
+            /*
             foundCategory.Name = categoryData.Name;
             foundCategory.Description = categoryData.Description;
-
+            */
+            _mapper.Map(categoryData,foundCategory);
+            /*
             return new CategoryReadDto
             {
                 CategoryId = foundCategory.CategoryId,
@@ -109,6 +131,8 @@ namespace asp_net_ecommerce_web_api.Services
                 Description = foundCategory.Description,
                 CreatedAt = foundCategory.CreatedAt,
             };
+            */
+            return _mapper.Map<CategoryReadDto>(foundCategory);
         }
 
 
@@ -121,7 +145,7 @@ namespace asp_net_ecommerce_web_api.Services
         public bool sc_DeleteCategoryById(Guid categoryId)
         {
             var foundcategory = sv_categories.FirstOrDefault(category => category.CategoryId == categoryId);
-            if(foundcategory == null)
+            if (foundcategory == null)
             {
                 return false;
             }

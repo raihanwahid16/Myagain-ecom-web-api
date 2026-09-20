@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using asp_net_ecommerce_web_api.Models; // 🟢 সঠিক নেমস্পেস লিংক করা হয়েছে
 using asp_net_ecommerce_web_api.DTOs;
 using asp_net_ecommerce_web_api.Services;
+using asp_net_ecommerce_web_api.Interfaces;
 
 
 
@@ -39,8 +40,8 @@ namespace asp_net_ecommerce_web_api.Controllers
 
 
 
-        private CategoryService sv_categoryService;
-        public CategoryController(CategoryService ps_category_service)
+        private ICategoryService sv_categoryService;
+        public CategoryController(ICategoryService ps_category_service)
         {
             sv_categoryService = ps_category_service;
         }

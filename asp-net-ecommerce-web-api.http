@@ -15,7 +15,7 @@ POST http://localhost:5266/api/categories
 Content-Type: application/json
 
 {
-"name": "Electronics1",
+"name": "Electronics",
 "description": "Apparel including shirts, pants, dresses, and more"
 }
 
